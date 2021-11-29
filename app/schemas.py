@@ -34,15 +34,6 @@ class TokenData(BaseModel):
 
 ### Responses ###
 
-class PostResponse(PostBase):
-    id: int
-    created_at: datetime
-    user_id: int
-
-    class Config:
-        orm_mode = True
-
-
 class UserCreateResponse(BaseModel):
     id: int
     email: str
@@ -50,6 +41,18 @@ class UserCreateResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class PostResponse(PostBase):
+    id: int
+    created_at: datetime
+    user_id: int
+    user: UserCreateResponse
+
+    class Config:
+        orm_mode = True
+
+
+
 
 
 
