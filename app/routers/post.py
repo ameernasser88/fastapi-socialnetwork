@@ -26,7 +26,7 @@ async def get_posts(db: Session = Depends(get_db),current_user=Depends(oath2.get
 
 #### Read 1 ####
 @router.get("/{id}")
-async def get_post(id: int, db: Session = Depends(get_db)):
+async def get_post(id: int, db: Session = Depends(get_db),current_user=Depends(oath2.get_current_user)):
     post = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(
         models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).filter(models.Post.id == id).first()
 
@@ -37,7 +37,7 @@ async def get_post(id: int, db: Session = Depends(get_db)):
     return post
 
 #### Create 1 ####
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PostResponse)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_post(post: schemas.PostCreate, db: Session = Depends(get_db), current_user=Depends(oath2.get_current_user)):
     new_post = models.Post(**post.dict())
     new_post.user_id = current_user.id
